@@ -1,29 +1,48 @@
-# SecureNotes API — Combined Lab (Student Starter)
+# SecureNotes API — Weeks 14–15: Secure It, Then Prove It
 
-One lab, two halves:
-- **Part A** — make the app's security real (JWT auth + authorization).
-- **Part B** — write the tests that prove Part A works and won't silently break.
+This is the SecureNotes student lab project with its five security tasks and nine TODO tests completed. The source files keep the original `TASK` marker boundaries in `app/main.py`.
 
-## Setup
+## Features
+- Passwords are salted and hashed with bcrypt; login verifies stored hashes.
+- Login issues a signed, expiring JWT, and protected routes verify the token.
+- Requests without valid credentials return HTTP 401.
+- Note ownership is enforced (HTTP 403 for someone else's note).
+- Only admins can view `/admin/users`, which excludes passwords and password hashes.
+
+## Install and run
+
+Run these commands inside this project directory:
+
 ```bash
 python -m venv venv
-# Windows:  venv\Scripts\activate   ·   macOS/Linux:  source venv/bin/activate
+source venv/bin/activate         # macOS/Linux
+# venv\Scripts\activate         # Windows (use this instead)
 pip install -r requirements.txt
-uvicorn app.main:app --reload     # the app (fake security for now)
-pytest -q                         # the tests: 2 pass, the rest are TODO (red)
+uvicorn app.main:app --reload
 ```
-Open http://127.0.0.1:8000/docs. Accounts: `admin/admin123`, `alice/alicepass` (note 1), `bob/bobpass` (note 2).
 
-> **Keep the bcrypt pin.** `requirements.txt` pins `bcrypt==4.0.1` — newer bcrypt breaks passlib.
+Visit http://127.0.0.1:8000/docs.
 
-## What you edit
-- **Part A:** `app/main.py`, only inside the `>>> TASK n ... <<< END TASK n` markers.
-- **Part B:** `tests/test_api.py` and `tests/test_security.py` — replace each `assert False, "TODO..."`.
-  (`tests/conftest.py` gives you the `client` fixture and `login` / `auth` helpers — don't edit it.)
+Development accounts (lab exercises only):
+- `admin` / `admin123` (admin)
+- `alice` / `alicepass` (owns note 1)
+- `bob` / `bobpass` (owns note 2)
 
-**The payoff:** the tests you write in Part B are the proof your Part A works. When your auth is
-correct, your tests go green. See the handout and `TASKS.md`.
+## Tests
 
-## Part D — peer review on GitHub
-Push to a public repo, commit the starter first, then your work on a `secure-and-test` branch, and open
-a pull request for a partner pair to review. See the handout (Part D).
+```bash
+pytest -q
+pytest --cov=app
+```
+
+There are 11 tests (2 examples and 9 completed tests). The `client` fixture in `tests/conftest.py` resets the in-memory database for each test.
+
+Keep the professor-specified `bcrypt==4.0.1` requirement and exclude `venv/` from Git. For any deployment beyond this classroom demonstration, replace the `SECRET_KEY` development default with a long random environment secret and use a real persistent database.
+
+## GitHub peer review
+
+1. Commit the **original starter** files on `main` as the initial commit.
+2. Create a `secure-and-test` branch and add the completed files from this project.
+3. Commit and push the feature branch, then open a pull request into `main`.
+4. Review another pair's PR, leave code comments and approve/request changes.
+5. Submit the repo link, your PR link, the reviewed PR link and your completed `TASKS.md`.
